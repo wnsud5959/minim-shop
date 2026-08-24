@@ -1,0 +1,13 @@
+==== MINIM push log ==== 
+2026-08-24 17:25:07.74 
+CWD: E:\Claude\AIAgent\fashion-mall\03_°³¹ß\minim-shop 
+ 
+---- STEP 1 git ---- 
+C:\Program Files\Git\cmd\git.exe
+git version 2.35.1.windows.2
+---- STEP 2 workflow ---- 
+deploy.yml not in root (maybe already moved) 
+deploy.yml
+---- STEP 3 init ---- 
+.git already exists 
+---- STEP 4 commit ---- 
