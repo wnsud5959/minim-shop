@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-0 text-ink-700 font-sans antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 디자인 시스템: 모서리 0 기본 */
+  button,
+  input,
+  select,
+  textarea {
+    @apply rounded-none;
+    font-family: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.olive.500');
+    outline-offset: 2px;
+  }
+
+  img {
+    @apply block max-w-full;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-container px-4 sm:px-6;
+  }
+
+  /* 이미지 자산 확보 전 톤 플레이스홀더 */
+  .tone {
+    background-image: linear-gradient(155deg, var(--tone-a) 0%, var(--tone-b) 100%);
+  }
+
+  /* 스와이프 캐러셀 — 스크롤바 숨김 (스크롤 자체는 유지) */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .skeleton {
+    @apply bg-ink-100 relative overflow-hidden;
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    animation: shimmer 1.2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .skeleton::after {
+    display: none;
+  }
+}

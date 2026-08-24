@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포는 동시에 하나만. 진행 중인 실행은 취소하지 않고 큐에 둔다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build
+        # 프로젝트 페이지는 /<저장소명>/ 하위에 배포되므로 base 경로를 주입한다
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - name: SPA fallback
+        # GitHub Pages는 history fallback을 지원하지 않는다.
+        # 404.html을 index.html 사본으로 두면 /products/p-0001 직접 접근이 동작한다.
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
