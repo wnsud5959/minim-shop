@@ -1,0 +1,36 @@
+name: CI
+
+# PR 병합 전 검증 전용. 배포는 하지 않는다 (배포는 deploy.yml 담당).
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# 같은 PR에 연속 push 시 이전 실행은 취소
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Type check
+        # QA-029 재발 방지 — dev 서버에서는 드러나지 않는 타입 에러를 여기서 차단
+        run: npm run typecheck
+
+      - name: Build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
