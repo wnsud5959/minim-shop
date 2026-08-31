@@ -129,11 +129,16 @@ function buildProduct(cat: CategoryCode, idx: number, seq: number): Product {
   const colorCount = 2 + Math.floor(r1 * 3);
   const colors = COLORS.slice(0, Math.min(colorCount, COLORS.length));
 
+  // QA-061: 기존 시드에서는 전체 품절 상품이 한 건도 생성되지 않아
+  // 품절 배지·장바구니 품절 처리·F-12 체크를 검증할 데이터가 없었다.
+  // seq 0 / 17 / 34 / 51 네 건을 결정론적으로 전량 품절 고정한다.
+  const forceSoldOut = seq % 17 === 0;
+
   const stock: Record<string, number> = {};
   colors.forEach((c, ci) => {
     sizes.forEach((s, si) => {
       const k = rand(seed * 7 + ci * 11 + si * 13);
-      stock[`${c.code}-${s.code}`] = k > 0.82 ? 0 : 1 + Math.floor(k * 12);
+      stock[`${c.code}-${s.code}`] = forceSoldOut || k > 0.82 ? 0 : 1 + Math.floor(k * 12);
     });
   });
   const soldOut = Object.values(stock).every((v) => v === 0);

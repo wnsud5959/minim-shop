@@ -45,6 +45,10 @@ export function Input({ label, error, helper, suffix, required, className, ...re
       <div
         className={cx(
           'flex h-[46px] items-center gap-2 border bg-ink-0 px-3.5 transition-colors duration-fast',
+          // QA-059: 내부 input의 outline-none이 전역 :focus-visible을 덮으므로
+          // 포커스 링을 래퍼에서 그린다. 키보드 이동일 때만 표시된다.
+          'has-[:focus-visible]:outline has-[:focus-visible]:outline-2',
+          'has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-olive-500',
           error ? 'border-danger bg-danger-bg' : 'border-ink-200 focus-within:border-ink-900',
           rest.disabled && 'bg-ink-100',
         )}
@@ -78,7 +82,8 @@ export function Select({ label, error, options, required, className, ...rest }: 
       <select
         id={id}
         className={cx(
-          'h-[46px] w-full appearance-none border bg-ink-0 px-3.5 text-body-sm text-ink-800 outline-none',
+          // QA-059: outline-none을 제거해 전역 :focus-visible 규칙이 적용되게 한다
+          'h-[46px] w-full appearance-none border bg-ink-0 px-3.5 text-body-sm text-ink-800',
           error ? 'border-danger' : 'border-ink-200 focus:border-ink-900',
           className,
         )}

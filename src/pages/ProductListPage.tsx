@@ -7,6 +7,7 @@ import {
   CATEGORIES,
   COLORS,
   FREE_SIZE,
+  PER_PAGE,
   PRICE_RANGES,
   SORT_OPTIONS,
 } from '@/lib/constants';
@@ -316,7 +317,8 @@ export default function ProductListPage() {
             <ErrorState onRetry={() => setReloadKey((v) => v + 1)} className="py-16" />
           ) : loading && !data ? (
             <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6 lg:gap-y-9">
-              {Array.from({ length: 8 }).map((_, i) => (
+              {/* QA-057: 스켈레톤 개수를 실제 렌더 개수(PER_PAGE)에 맞춰 레이아웃 시프트를 없앤다 */}
+              {Array.from({ length: PER_PAGE }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
