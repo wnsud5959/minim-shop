@@ -30,6 +30,10 @@ jobs:
         # QA-029 재발 방지 — dev 서버에서는 드러나지 않는 타입 에러를 여기서 차단
         run: npm run typecheck
 
+      - name: Test
+        # 금액 계산·재고 상한·주문 대상 결정 로직의 회귀를 병합 전에 차단
+        run: npm run test
+
       - name: Build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
